@@ -1,0 +1,49 @@
+require File.expand_path("../../spec_helper", __FILE__)
+
+module VncTools
+  describe Server do
+    context "managing new displays" do
+      let(:server) { Server.new }
+      before { server.stub :last_status => mock(:success? => true) }
+
+      it "starts a new server" do
+        server.should_receive(:`).with("tightvncserver 2>&1").and_return("desktop is #{Socket.gethostname}:1")
+        server.start
+        server.display.should == ":1"
+      end
+
+      it "stops the server" do
+        server.should_receive(:`).with("tightvncserver -kill :5 2>&1")
+        server.stub :display => ":5"
+        server.stop
+      end
+
+      it "raises Server::Error if the server could not be started" do
+        server.should_receive(:`).and_return("oops")
+        server.stub :last_status => mock(:success? => false)
+
+        lambda { server.start }.should raise_error(Server::Error, /oops/)
+      end
+    end
+
+    context "controlling an existing display" do
+      let(:server) { Server.new ":5" }
+      before { server.stub :last_status => mock(:success? => true) }
+
+      it "starts the server on the given display" do
+        server.should_receive(:`).with("tightvncserver :5 2>&1").and_return("desktop is #{Socket.gethostname}:5")
+        server.start
+        server.display.should == ":5"
+      end
+    end
+
+    it "returns an instance for all existing displays" do
+      Dir.stub(:[]).and_return [".vnc/qa1:1.pid", ".vnc/qa1:2.pid", ".vnc/qa1:3.pid"]
+
+      all = Server.all
+      all.size.should == 3
+      all.map { |e| e.display }.should == [":1", ":2", ":3"]
+    end
+
+  end # Server
+end # VncTools
