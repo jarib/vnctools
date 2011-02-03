@@ -3,6 +3,7 @@ module Vnctools
 end
 
 require 'observer'
+require 'childprocess'
 require 'vnctools/version'
 require 'vnctools/server'
 require 'vnctools/server_pool'
