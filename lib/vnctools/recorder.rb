@@ -25,6 +25,7 @@ module VncTools
       @process.io.inherit! if $DEBUG
       @process.start
 
+      # TODO: this may be too quick to actually catch the failure
       if @process.crashed?
         raise Error, "ffmpeg failed, run with $DEBUG = true for full output"
       end
