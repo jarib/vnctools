@@ -3,7 +3,7 @@ require File.expand_path("../../spec_helper", __FILE__)
 module VncTools
   describe Recorder do
     context "given a display string" do
-      let(:process)  { mock(ChildProcess, :crashed? => false, :start => nil, :stop => nil) }
+      let(:process)  { mock(ChildProcess, :crashed? => false, :start => nil, :stop => nil, :io => mock("io").as_null_object) }
       let(:recorder) { Recorder.new ":1", "out.mp4"  }
 
       it "knows its display" do

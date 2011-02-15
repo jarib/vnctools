@@ -22,7 +22,12 @@ module VncTools
         "-sameq", output                            # output
       )
 
-      @process.io.inherit! if $DEBUG
+      if $DEBUG
+        @process.io.inherit!
+      else
+        @process.io.stdout = @process.io.stderr = "/dev/null"
+      end
+
       @process.start
 
       # TODO: this may be too quick to actually catch the failure
