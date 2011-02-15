@@ -25,7 +25,7 @@ module VncTools
       if $DEBUG
         @process.io.inherit!
       else
-        @process.io.stdout = @process.io.stderr = "/dev/null"
+        @process.io.stdout = @process.io.stderr = File.open("/dev/null", "w")
       end
 
       @process.start
