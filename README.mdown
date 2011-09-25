@@ -3,6 +3,8 @@ vnctools
 
 Simple CLI wrappers to control and record VNC displays from Ruby.
 
+[![Build Status](https://secure.travis-ci.org/jarib/vnctools.png)](http://travis-ci.org/jarib/vnctools)
+
 Usage
 =============
 
