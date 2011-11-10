@@ -30,9 +30,9 @@ module VncTools
 
     def start
       if display
-        server display
+        server(display, *launch_arguments)
       else
-        output = server
+        output = server(*launch_arguments)
         @display = output[/desktop is #{host}(\S+)/, 1]
       end
     end
@@ -42,6 +42,10 @@ module VncTools
     end
 
     private
+
+    def launch_arguments
+      [] # can be overriden by subclasses
+    end
 
     def server(*args)
       cmd = [self.class.executable, args, '2>&1'].flatten.compact

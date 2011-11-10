@@ -24,6 +24,18 @@ module VncTools
 
         lambda { server.start }.should raise_error(Server::Error, /oops/)
       end
+
+      it "can be overriden to provide custom launch arguments" do
+        server_class = Class.new(Server) {
+          def launch_arguments() %w[-geometry 1280x1024] end
+        }
+        
+        server = server_class.new
+        server.stub :last_status => mock(:success? => true)
+
+        server.should_receive(:`).with("tightvncserver -geometry 1280x1024 2>&1").and_return("desktop is #{Socket.gethostname}:1")
+        server.start
+      end
     end
 
     context "controlling an existing display" do
