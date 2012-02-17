@@ -8,20 +8,21 @@ Simple CLI wrappers to control and record VNC displays from Ruby.
 Usage
 =============
 
-    # `tightvncserver`
-    server = VncTools::Server.new
-    server.start
+```ruby
+# `tightvncserver`
+server = VncTools::Server.new
+server.start
 
-    # `ffmpeg`
-    recorder = VncTools::Recorder.new(server.display, "movie.mp4")
-    recorder.start
+# `ffmpeg`
+recorder = VncTools::Recorder.new(server.display, "movie.mp4")
+recorder.start
     
-    ENV['DISPLAY'] = server.display
-    ...
+ENV['DISPLAY'] = server.display
+...
     
-    recorder.stop
-    server.stop
-
+recorder.stop
+server.stop
+```
 
 Note on Patches/Pull Requests
 =============================
