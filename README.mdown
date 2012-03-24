@@ -24,6 +24,12 @@ recorder.stop
 server.stop
 ```
 
+Requirements
+============
+
+* Linux
+* tightvncserver (apt-get install tightvncserver)
+
 Note on Patches/Pull Requests
 =============================
 
