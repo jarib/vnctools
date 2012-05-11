@@ -1,0 +1,43 @@
+require 'rack'
+require 'vnctools'
+
+class VncPoolService
+  def initialize(size, port)
+    @pool = VncTools::ServerPool.new(size)
+    @port = port
+    
+    @servers = {}
+  end
+  
+  def start
+    Rack::Server.new(:app => self, :Port => @port).start
+  end
+  
+  def call(env)
+    req = Rack::Request.new(env)
+    case req.path_info
+    when "/get"
+      server = @pool.get
+      @servers[server.hash] = server
+      success(server.hash.to_s)
+    when %r[/release/(.+)]
+      server = @servers[$1]
+      server or return not_found
+      
+      success 'ok'
+    else
+      not_found
+    end
+  end
+  
+  def success(data)
+    [200, {}, [data]]
+  end
+  
+  def not_found(data = '')
+    [404, {}, [data]]
+  end
+end
+
+pool_size = Integer(ARGV.first || 10)
+VncPoolService.new(pool_size, 9090).start

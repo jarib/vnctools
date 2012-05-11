@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "vnctools"
 
   s.add_dependency "childprocess"
+  s.add_dependency "rack"
   s.add_development_dependency "simplecov"
   s.add_development_dependency "rspec", "~> 2.5"
   s.add_development_dependency "rake", "~> 0.9.2"
