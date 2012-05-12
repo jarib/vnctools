@@ -3,16 +3,21 @@ module VncTools
     include Observable
 
     def initialize(capacity, klass = Server)
-      @capacity = capacity
-      @servers  = Array.new(capacity) { klass.new }
-      @running  = []
+      @capacity     = capacity
+      @running      = []
+      @server_class = klass
+
+      create_servers
     end
 
     def stop
-      running.each do |s|
+      running.dup.each do |s|
         fire :on_display_stopping, s
         s.stop
+        running.delete s
       end
+
+      create_servers
     end
 
     def size
@@ -56,6 +61,10 @@ module VncTools
       end
 
       server
+    end
+
+    def create_servers
+      @servers = Array.new(@capacity) { @server_class.new }
     end
 
     class TooManyDisplaysError < StandardError
