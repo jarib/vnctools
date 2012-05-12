@@ -13,7 +13,7 @@ module VncTools
     def stop
       running.dup.each do |s|
         fire :on_display_stopping, s
-        s.stop
+        stop_server s
         running.delete s
       end
 
@@ -56,7 +56,7 @@ module VncTools
 
       if server.display.nil?
         fire :on_display_starting, server
-        server.start
+        start_server server
         @running << server
       end
 
@@ -65,6 +65,15 @@ module VncTools
 
     def create_servers
       @servers = Array.new(@capacity) { @server_class.new }
+    end
+
+    # can be overridden by subclasses
+    def start_server(server)
+      server.start
+    end
+
+    def stop_server(server)
+      server.stop
     end
 
     class TooManyDisplaysError < StandardError
