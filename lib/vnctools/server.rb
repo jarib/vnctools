@@ -48,11 +48,11 @@ module VncTools
     end
 
     def server(*args)
-      cmd = [self.class.executable, args, '2>&1'].flatten.compact
-      out = `#{cmd.join ' '}`
+      cmd = [self.class.executable, args, '2>&1'].flatten.compact.join ' '
+      out = `#{cmd}`
 
       unless last_status.success?
-        raise Error, "could not run #{self.class.executable}: #{out.inspect}"
+        raise Error, "could not run #{cmd.inspect}:\n#{out}\ncurrent displays: #{self.class.displays.inspect}"
       end
 
       out
