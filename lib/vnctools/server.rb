@@ -1,4 +1,5 @@
 require "socket"
+require 'pathname'
 
 module VncTools
   class Server
@@ -37,8 +38,24 @@ module VncTools
       end
     end
 
-    def stop
+    def stop(force = false)
       server "-kill", display.to_s
+    rescue Error
+      force_kill if force
+    end
+
+    def force_kill
+      if pid_path.exist?
+        Process.kill(9, Integer(pid_path.read))
+        pid_path.delete if pid_path.exist?
+      end
+    rescue Errno::ESRCH
+      # already gone
+      pid_path.delete if pid_path.exist?
+    end
+
+    def pid_path
+      @pid_path ||= Pathname.new(File.expand_path("~/.vnc/#{host}#{display}.pid"))
     end
 
     private

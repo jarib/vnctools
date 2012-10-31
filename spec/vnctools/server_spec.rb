@@ -18,6 +18,20 @@ module VncTools
         server.stop
       end
 
+      it "forcefully stops the server" do
+        server.should_receive(:`).with("tightvncserver -kill :5 2>&1")
+        server.stub :last_status => mock(:success? => false)
+        server.stub :display => ":5"
+
+        mock_pathname = mock('Pathname:5.pid', :exist? => true)
+        Pathname.should_receive(:new).with("#{ENV['HOME']}/.vnc/#{Socket.gethostname}:5.pid").and_return(mock_pathname)
+        mock_pathname.should_receive(:read).and_return 123123
+        mock_pathname.should_receive(:delete)
+        Process.should_receive(:kill).with(9, 123123)
+
+        server.stop(true)
+      end
+
       it "raises Server::Error if the server could not be started" do
         server.should_receive(:`).and_return("oops")
         server.stub :last_status => mock(:success? => false)
