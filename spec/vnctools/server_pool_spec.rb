@@ -2,8 +2,8 @@ require File.expand_path("../../spec_helper", __FILE__)
 
 module VncTools
   describe ServerPool do
-    let(:server) { mock(Server, :start => nil, :stop => nil) }
-    let(:fake_server_class) { mock(:new => server)}
+    let(:server) { double(Server, :start => nil, :stop => nil) }
+    let(:fake_server_class) { double(:new => server)}
     let(:pool)  { ServerPool.new(3, fake_server_class) }
 
     it "creates 3 instances of the given display class" do
@@ -42,7 +42,7 @@ module VncTools
     end
 
     it "notifies observers" do
-      observer = mock(Observable)
+      observer = double(Observable)
 
       observer.should_receive(:update).with :on_display_starting, server
       observer.should_receive(:update).with :on_display_fetched , server

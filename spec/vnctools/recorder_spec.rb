@@ -3,7 +3,7 @@ require File.expand_path("../../spec_helper", __FILE__)
 module VncTools
   describe Recorder do
     context "given a display string" do
-      let(:process)  { mock(ChildProcess, :crashed? => false, :start => nil, :stop => nil, :io => mock("io").as_null_object) }
+      let(:process)  { double(ChildProcess, :crashed? => false, :start => nil, :stop => nil, :io => double("io").as_null_object) }
       let(:recorder) { Recorder.new ":1", "out.mp4"  }
 
       it "knows its display" do
@@ -35,7 +35,7 @@ module VncTools
       end
 
       it "raises an error if the process crashed" do
-        ChildProcess.stub :build => mock(:start => nil, :crashed? => true)
+        ChildProcess.stub :build => double(:start => nil, :crashed? => true)
 
         lambda { recorder.start }.should raise_error
       end

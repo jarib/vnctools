@@ -4,7 +4,7 @@ module VncTools
   describe Server do
     context "managing new displays" do
       let(:server) { Server.new }
-      before { server.stub :last_status => mock(:success? => true) }
+      before { server.stub :last_status => double(:success? => true) }
 
       it "starts a new server" do
         server.should_receive(:`).with("tightvncserver 2>&1").and_return("desktop is #{Socket.gethostname}:1")
@@ -20,10 +20,10 @@ module VncTools
 
       it "forcefully stops the server" do
         server.should_receive(:`).with("tightvncserver -kill :5 2>&1")
-        server.stub :last_status => mock(:success? => false)
+        server.stub :last_status => double(:success? => false)
         server.stub :display => ":5"
 
-        mock_pathname = mock('Pathname:5.pid', :exist? => true)
+        mock_pathname = double('Pathname:5.pid', :exist? => true)
         Pathname.should_receive(:new).with("#{ENV['HOME']}/.vnc/#{Socket.gethostname}:5.pid").and_return(mock_pathname)
         mock_pathname.should_receive(:read).and_return 123123
         mock_pathname.should_receive(:delete)
@@ -34,7 +34,7 @@ module VncTools
 
       it "raises Server::Error if the server could not be started" do
         server.should_receive(:`).and_return("oops")
-        server.stub :last_status => mock(:success? => false)
+        server.stub :last_status => double(:success? => false)
 
         lambda { server.start }.should raise_error(Server::Error, /oops/)
       end
@@ -51,7 +51,7 @@ module VncTools
         }
 
         server = server_class.new
-        server.stub :last_status => mock(:success? => true)
+        server.stub :last_status => double(:success? => true)
 
         server.should_receive(:`).with("tightvncserver -geometry 1280x1024 2>&1").and_return("desktop is #{Socket.gethostname}:1")
         server.start
@@ -60,7 +60,7 @@ module VncTools
 
     context "controlling an existing display" do
       let(:server) { Server.new ":5" }
-      before { server.stub :last_status => mock(:success? => true) }
+      before { server.stub :last_status => double(:success? => true) }
 
       it "starts the server on the given display" do
         server.should_receive(:`).with("tightvncserver :5 2>&1").and_return("desktop is #{Socket.gethostname}:5")
