@@ -39,11 +39,17 @@ module VncTools
         lambda { server.start }.should raise_error(Server::Error, /oops/)
       end
 
+      it "raises Server::Error if the display number could not be parsed" do
+        server.should_receive(:`).and_return("oops")
+
+        lambda { server.start }.should raise_error(Server::Error, /could not find display/)
+      end
+
       it "can be overriden to provide custom launch arguments" do
         server_class = Class.new(Server) {
           def launch_arguments() %w[-geometry 1280x1024] end
         }
-        
+
         server = server_class.new
         server.stub :last_status => mock(:success? => true)
 
