@@ -34,8 +34,9 @@ module VncTools
         server(display, *launch_arguments)
       else
         output = server(*launch_arguments)
-        @display = output[/desktop is #{host}(\S+)/, 1]
-        @display or raise Error, "could not find display in #{output.inspect}"
+        rx = /desktop is #{host}(\S+)/
+        @display = output[rx, 1]
+        @display or raise Error, "could not find display in #{output.inspect} =~ #{rx.source}"
       end
     end
 
