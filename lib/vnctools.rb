@@ -1,4 +1,4 @@
-module Vnctools
+module VncTools
   # Your code goes here...
 end
 
