@@ -82,7 +82,14 @@ module VncTools
     end
 
     def host
-      @host ||= Socket.gethostname
+      @host ||= (
+        # Java 6 and 7 is inconsistent in its return value, so attempt to read /etc/hostname if possible
+        if defined?(JRUBY_VERSION) && File.exist?("/etc/hostname")
+          File.read("/etc/hostname").strip
+        else
+          Socket.gethostname
+        end
+      )
     end
   end # VncServer
 end # CukeForker
