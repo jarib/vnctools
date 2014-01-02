@@ -16,10 +16,10 @@ server.start
 # `ffmpeg`
 recorder = VncTools::Recorder.new(server.display, "movie.mp4")
 recorder.start
-    
+
 ENV['DISPLAY'] = server.display
 ...
-    
+
 recorder.stop
 server.stop
 ```
@@ -44,5 +44,5 @@ Note on Patches/Pull Requests
 Copyright
 =========
 
-Copyright (c) 2011-2013 Jari Bakken. See LICENSE for details.
+Copyright (c) 2011-2014 Jari Bakken. See LICENSE for details.
 
