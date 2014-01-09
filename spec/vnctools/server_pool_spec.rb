@@ -2,7 +2,7 @@ require File.expand_path("../../spec_helper", __FILE__)
 
 module VncTools
   describe ServerPool do
-    let(:server) { double(Server, :start => nil, :stop => nil) }
+    let(:server) { double(Server, :start => nil, :stop => nil, :dead? => false) }
     let(:fake_server_class) { double(:new => server)}
     let(:pool)  { ServerPool.new(3, fake_server_class) }
 
@@ -23,6 +23,18 @@ module VncTools
       pool.size.should == 2
 
       pool.release obj
+    end
+
+    it 'replaces a dead server from the pool' do
+      server.stub(:dead? => true)
+      fake_server_class.should_receive(:new).exactly(3).times
+      pool # create pool to trigger the above
+
+      replacement_server = double(Server, :dead? => false)
+      fake_server_class.should_receive(:new).once.and_return(replacement_server)
+      replacement_server.should_receive(:start)
+
+      pool.get.should == replacement_server
     end
 
     it "can stop the pool" do

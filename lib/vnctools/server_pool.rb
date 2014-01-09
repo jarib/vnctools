@@ -54,9 +54,11 @@ module VncTools
     def next_server
       server = @servers.shift
 
-      if server.display.nil?
+      if server.display.nil? || server.dead?
+        server = @server_class.new if server.dead?
+
         fire :on_display_starting, server
-        start_server server
+        start_server(server)
         @running << server
       end
 
@@ -72,6 +74,7 @@ module VncTools
       server.start
     end
 
+    # can be overridden by subclasses
     def stop_server(server)
       server.stop
     end

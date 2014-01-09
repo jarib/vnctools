@@ -56,6 +56,17 @@ module VncTools
       pid_path.delete if pid_path.exist?
     end
 
+    def alive?
+      pid_path.exist? && Process.kill(0, Integer(pid_path.read))
+    rescue Errno::ESRCH
+      pid_path.delete if pid_path.exist?
+      false
+    end
+
+    def dead?
+      !alive?
+    end
+
     def pid_path
       @pid_path ||= Pathname.new(File.expand_path("~/.vnc/#{host}#{display}.pid"))
     end
