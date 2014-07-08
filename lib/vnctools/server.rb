@@ -19,7 +19,11 @@ module VncTools
       attr_writer :executable
 
       def executable
-        @executable ||= "tightvncserver"
+        @executable ||= find_executable
+      end
+
+      def find_executable
+        `which tightvncserver vncserver xtightvncserver`.each_line.map(&:strip).first || 'tightvncserver'
       end
     end
 
